@@ -17,6 +17,10 @@ Lingua Buddy 是一個自用手機英文學習 PWA。第一版重點不是考試
 
 - 閱讀場景：論文、英文演講、英文網頁、簡報詞彙、考試輔助、自由輸入
 - 內容輸入：貼上 paper 段落、演講稿、網頁文字或中文主題
+- 檔案匯入：PDF、文字檔、照片 OCR、音檔素材
+- PDF 抽文字：使用瀏覽器端 PDF.js，先抽前 40 頁，適合論文與講義
+- 照片 OCR：使用瀏覽器端 Tesseract.js，適合截圖、拍照、投影片截字
+- 音檔匯入：可上傳 MP3/M4A/WAV 播放與記錄素材，逐字稿需下一階段接語音轉文字後端
 - 詞彙抽取：自動抓長詞、學術詞、常見閱讀詞
 - 中文提示：內建部分學術詞提示，例如 `retrieval`、`reliability`、`hallucination`
 - 詞彙庫：把每次抽出的詞累積起來
@@ -39,6 +43,13 @@ Lingua Buddy 是一個自用手機英文學習 PWA。第一版重點不是考試
 
 - iPhone Safari：分享按鈕 → 加入主畫面
 - Android Chrome：右上選單 → 加到主畫面
+
+匯入功能注意：
+
+- PDF 如果是掃描圖檔，可能抽不到文字，請改用照片 OCR
+- OCR 第一次會下載辨識模型，手機上可能需要等一下
+- 文字檔支援 `.txt`、`.md`、`.csv`
+- 音檔第一版是播放與素材記錄，不會自動把 MP3 轉成逐字稿
 
 語音功能注意：
 
@@ -222,6 +233,7 @@ updated_at: last sync time
 - `mistakes`：錯題本
 - `sessions`：學習進度紀錄
 - `sentences`：跟讀句
+- `imports`：匯入檔案紀錄
 - `sourceType`：目前來源類型，例如 paper、talk、web
 - `streak`：連續練習天數
 - `lastPracticeDate`：最後練習日期
@@ -261,16 +273,17 @@ owner_id = my-phone-learning
 - 目前是規則式詞彙抽取，不是 AI 完整語意分析
 - 中文提示只內建一小批常見學術詞
 - 不能直接貼 URL 自動抓網頁，手機第一版先採用「複製網頁文字貼上」
+- MP3 尚未自動轉逐字稿；要加這個功能，需要接 OpenAI Whisper、OpenAI Audio API 或其他語音轉文字後端
 - 口說回饋是語音辨識文字比對，不是精準發音評分
 - Supabase 資料目前是一筆 JSON，之後可拆正式表
 
 ## 未來可加功能
 
 - OpenAI 分析：摘要、翻譯、例句、同義詞、用法
+- OpenAI Audio/Whisper：MP3 自動轉英文逐字稿，再產生詞彙與跟讀句
 - OpenAI Realtime：真正英文對話陪練
 - Azure Pronunciation Assessment：音素級發音糾正
 - URL 抓取：貼英文網頁網址後自動讀內容
-- PDF 匯入：上傳論文 PDF 後抽 abstract 和重點段落
 - 正式資料表：拆成 `materials`、`vocabulary`、`mistakes`、`reviews`、`sessions`
 - 登入同步：Google login 或 email magic link
 
@@ -296,8 +309,9 @@ icon.svg                PWA 圖示
 1. 手機打開 GitHub Pages 網址
 2. 右上角是否顯示 `雲端已同步`
 3. 到「輸入」貼上論文段落
-4. 按「分析並加入詞彙」
-5. 到「詞彙」確認有詞彙卡
-6. 按「加入複習」
-7. 到「複習」確認該詞出現
-8. 到 Supabase Table Editor 確認 `learning_states` 有更新時間
+4. 或用 PDF、TXT、OCR、MP3 按鈕匯入素材
+5. 按「分析並加入詞彙」
+6. 到「詞彙」確認有詞彙卡
+7. 按「加入複習」
+8. 到「複習」確認該詞出現
+9. 到 Supabase Table Editor 確認 `learning_states` 有更新時間
