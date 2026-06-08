@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lingua Buddy | Supabase SQL</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 18px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #253238;
+        background: #f3f8f6;
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 26px;
+        margin: 0 0 8px;
+      }
+
+      p {
+        color: #6c7a80;
+        line-height: 1.6;
+      }
+
+      button {
+        width: 100%;
+        min-height: 50px;
+        border: 0;
+        border-radius: 8px;
+        background: #267d68;
+        color: white;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 520px;
+        margin: 14px 0;
+        padding: 14px;
+        border: 1px solid #dbe8e7;
+        border-radius: 8px;
+        font: 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        line-height: 1.5;
+        background: white;
+      }
+
+      .status {
+        min-height: 24px;
+        color: #267d68;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Supabase SQL</h1>
+      <p>按下複製，回到 Supabase 的 SQL Editor 貼上並 Run。</p>
+      <button id="copyButton">複製 SQL</button>
+      <p class="status" id="status"></p>
+      <textarea id="sql" readonly>create table if not exists public.learning_states (
+  owner_id text primary key,
+  state jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.learning_states enable row level security;
+
+drop policy if exists "single owner read" on public.learning_states;
+drop policy if exists "single owner write" on public.learning_states;
+drop policy if exists "single owner update" on public.learning_states;
+
+create policy "single owner read"
+on public.learning_states
+for select
+to anon
+using (owner_id = 'my-phone-learning');
+
+create policy "single owner write"
+on public.learning_states
+for insert
+to anon
+with check (owner_id = 'my-phone-learning');
+
+create policy "single owner update"
+on public.learning_states
+for update
+to anon
+using (owner_id = 'my-phone-learning')
+with check (owner_id = 'my-phone-learning');</textarea>
+    </main>
+
+    <script>
+      const button = document.querySelector("#copyButton");
+      const status = document.querySelector("#status");
+      const sql = document.querySelector("#sql");
+
+      button.addEventListener("click", async () => {
+        sql.select();
+        sql.setSelectionRange(0, sql.value.length);
+        try {
+          await navigator.clipboard.writeText(sql.value);
+          status.textContent = "已複製，可以回 Supabase 貼上。";
+        } catch {
+          document.execCommand("copy");
+          status.textContent = "已選取 SQL，請按複製或直接貼上。";
+        }
+      });
+    </script>
+  </body>
+</html>
