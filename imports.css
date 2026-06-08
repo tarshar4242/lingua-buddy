@@ -1,0 +1,108 @@
+.import-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.import-card {
+  min-height: 116px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+}
+
+.import-card:hover {
+  border-color: var(--mint);
+  background: #f4fbf8;
+}
+
+.import-card span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 42px;
+  height: 30px;
+  margin-bottom: 10px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #edf7f3;
+  color: var(--mint-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.import-card strong,
+.import-card small {
+  display: block;
+}
+
+.import-card strong {
+  margin-bottom: 4px;
+}
+
+.import-card small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.file-input {
+  display: none;
+}
+
+.import-status {
+  margin-bottom: 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f5faf8;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.import-status.working {
+  border-color: #f2dfb6;
+  background: #fff8eb;
+  color: #8a6320;
+}
+
+.import-status.done {
+  border-color: #cce5dc;
+  background: #edf7f3;
+  color: var(--mint-dark);
+}
+
+.import-status.error {
+  border-color: #f3c8c0;
+  background: #fff0ee;
+  color: #a24031;
+}
+
+.audio-import {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid #d5e5f4;
+  border-radius: 8px;
+  background: #f3f8fd;
+}
+
+.audio-import audio {
+  width: 100%;
+}
+
+.audio-import p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .import-grid {
+    grid-template-columns: 1fr;
+  }
+}
