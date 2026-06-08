@@ -40,6 +40,22 @@
     state.imports = state.imports.slice(-20);
   }
 
+  function mountNativeFileInputs() {
+    const pairs = [
+      ["pdf", "pdfFile"],
+      ["text", "textFile"],
+      ["image", "imageFile"],
+      ["audio", "audioFile"],
+    ];
+    pairs.forEach(([kind, inputId]) => {
+      const card = document.querySelector(`[data-import='${kind}']`);
+      const input = document.querySelector(`#${inputId}`);
+      if (!card || !input || card.contains(input)) return;
+      input.setAttribute("aria-label", `${card.innerText.trim()} 上傳`);
+      card.appendChild(input);
+    });
+  }
+
   async function extractTextFromPdf(file) {
     if (!window.pdfjsLib) throw new Error("PDF 套件尚未載入，請確認網路後重試。");
     window.pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -141,10 +157,7 @@
   }
 
   function bindImportEvents() {
-    document.querySelector("[data-import='pdf']")?.addEventListener("click", () => document.querySelector("#pdfFile").click());
-    document.querySelector("[data-import='text']")?.addEventListener("click", () => document.querySelector("#textFile").click());
-    document.querySelector("[data-import='image']")?.addEventListener("click", () => document.querySelector("#imageFile").click());
-    document.querySelector("[data-import='audio']")?.addEventListener("click", () => document.querySelector("#audioFile").click());
+    mountNativeFileInputs();
     document.querySelector("#pdfFile")?.addEventListener("change", (event) => handleFileInput(event.target, handlePdfImport));
     document.querySelector("#textFile")?.addEventListener("change", (event) => handleFileInput(event.target, handleTextImport));
     document.querySelector("#imageFile")?.addEventListener("change", (event) => handleFileInput(event.target, handleImageImport));
