@@ -8,7 +8,8 @@
     <meta name="apple-mobile-web-app-title" content="Lingua Buddy" />
     <title>Lingua Buddy | 自用英文學習平台</title>
     <link rel="manifest" href="./manifest.webmanifest?v=5" />
-    <link rel="stylesheet" href="./styles.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=6" />
+    <link rel="stylesheet" href="./imports.css?v=1" />
   </head>
   <body>
     <main class="app-shell">
@@ -120,6 +121,39 @@
                 <button class="source-tab" data-source="talk">演講</button>
                 <button class="source-tab" data-source="web">網頁</button>
               </div>
+              <div class="import-grid" aria-label="匯入檔案">
+                <button class="import-card" data-import="pdf">
+                  <span>PDF</span>
+                  <strong>論文 PDF</strong>
+                  <small>抽出可複習文字</small>
+                </button>
+                <button class="import-card" data-import="text">
+                  <span>TXT</span>
+                  <strong>文字檔</strong>
+                  <small>.txt .md .csv</small>
+                </button>
+                <button class="import-card" data-import="image">
+                  <span>OCR</span>
+                  <strong>照片截字</strong>
+                  <small>截圖、拍照辨識</small>
+                </button>
+                <button class="import-card" data-import="audio">
+                  <span>MP3</span>
+                  <strong>音檔</strong>
+                  <small>先播放與記錄</small>
+                </button>
+              </div>
+              <input id="pdfFile" class="file-input" type="file" accept="application/pdf,.pdf" />
+              <input id="textFile" class="file-input" type="file" accept=".txt,.md,.markdown,.csv,.text,text/plain,text/markdown,text/csv" />
+              <input id="imageFile" class="file-input" type="file" accept="image/*" />
+              <input id="audioFile" class="file-input" type="file" accept="audio/mpeg,audio/mp3,audio/*,.mp3,.m4a,.wav" />
+              <div class="import-status" id="importStatus">
+                <span>可貼上文字，也可上傳 PDF、文字檔、照片或音檔。</span>
+              </div>
+              <div class="audio-import" id="audioImport" hidden>
+                <audio id="audioPreview" controls></audio>
+                <p>第一版會保存音檔來源紀錄；若要 MP3 自動轉逐字稿，下一步要接 Whisper 或其他語音轉文字後端。</p>
+              </div>
               <textarea id="materialInput" placeholder="貼上 abstract、paper 段落、演講稿、英文網頁內容，或你想學的中文主題。"></textarea>
               <div class="button-row">
                 <button class="primary-action" id="buildLesson">分析並加入詞彙</button>
@@ -216,7 +250,10 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="./supabase-config.js?v=2"></script>
-    <script src="./app.js?v=6"></script>
+    <script src="./app.js?v=7"></script>
+    <script src="./imports.js?v=1"></script>
   </body>
 </html>
