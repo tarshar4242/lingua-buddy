@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#267d68" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Lingua Buddy" />
+    <title>Lingua Buddy | 自用英文學習平台</title>
+    <link rel="manifest" href="./manifest.webmanifest?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar" aria-label="學習導覽">
+        <div class="brand">
+          <div class="brand-mark">LB</div>
+          <div>
+            <h1>Lingua Buddy</h1>
+            <p>論文與演講英文庫</p>
+          </div>
+        </div>
+
+        <section class="profile-panel">
+          <div class="avatar-ring">
+            <div class="avatar-face">
+              <span></span>
+            </div>
+          </div>
+          <p class="profile-label">今日狀態</p>
+          <strong id="todayStatus">先選目標開始</strong>
+          <div class="streak-row">
+            <span id="streakCount">0</span>
+            <small>天連續練習</small>
+          </div>
+        </section>
+
+        <nav class="nav-list" aria-label="主要功能">
+          <button class="nav-item active" data-view="dashboard">首頁</button>
+          <button class="nav-item" data-view="materials">輸入</button>
+          <button class="nav-item" data-view="vocabulary">詞彙</button>
+          <button class="nav-item" data-view="speaking">口說</button>
+          <button class="nav-item" data-view="review">複習</button>
+          <button class="nav-item" data-view="mistakes">錯題本</button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">First MVP</p>
+            <h2 id="viewTitle">首頁</h2>
+          </div>
+          <div class="topbar-actions">
+            <div class="sync-chip" id="syncStatus">本機保存</div>
+            <div class="goal-chip" id="currentGoal">尚未設定目標</div>
+          </div>
+        </header>
+
+        <section class="view active" id="dashboard">
+          <div class="hero">
+            <div class="hero-copy">
+              <p class="eyebrow">Research Vocabulary Coach</p>
+              <h3>把論文、演講、網頁變成你的英文詞彙庫。</h3>
+              <p>貼上要讀的內容，系統會抓關鍵詞、學術用語、跟讀句與複習卡，幫你累積看懂資料與開口報告的字彙。</p>
+              <button class="primary-action" id="startToday">貼上內容</button>
+            </div>
+            <div class="practice-orbit" aria-hidden="true">
+              <div class="sound-card card-a">Paper</div>
+              <div class="sound-card card-b">Talk</div>
+              <div class="sound-card card-c">Web</div>
+              <div class="center-orb">
+                <span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <section class="panel">
+              <div class="panel-heading">
+                <h3>選擇閱讀場景</h3>
+                <p>先用場景決定要抓哪一類詞彙。</p>
+              </div>
+              <div class="goal-grid" id="goalGrid"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <h3>學習儀表板</h3>
+                <p>資料會存在這台電腦的瀏覽器。</p>
+              </div>
+              <div class="metric-grid">
+                <div class="metric">
+                  <strong id="metricSessions">0</strong>
+                  <span>處理次數</span>
+                </div>
+                <div class="metric">
+                  <strong id="metricVocab">0</strong>
+                  <span>詞彙</span>
+                </div>
+                <div class="metric">
+                  <strong id="metricReviews">0</strong>
+                  <span>待複習</span>
+                </div>
+              </div>
+              <div class="timeline" id="timeline"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="materials">
+          <div class="grid two">
+            <section class="panel tall">
+              <div class="panel-heading">
+                <h3>貼上論文、演講或網頁內容</h3>
+                <p>手機最穩的方式是先複製文字貼上；URL 抓取之後接後端再做。</p>
+              </div>
+              <div class="source-tabs" role="group" aria-label="來源類型">
+                <button class="source-tab active" data-source="paper">論文</button>
+                <button class="source-tab" data-source="talk">演講</button>
+                <button class="source-tab" data-source="web">網頁</button>
+              </div>
+              <textarea id="materialInput" placeholder="貼上 abstract、paper 段落、演講稿、英文網頁內容，或你想學的中文主題。"></textarea>
+              <div class="button-row">
+                <button class="primary-action" id="buildLesson">分析並加入詞彙</button>
+                <button class="ghost-action" id="loadSample">論文範例</button>
+              </div>
+            </section>
+
+            <section class="panel tall">
+              <div class="panel-heading">
+                <h3>閱讀任務</h3>
+                <p>第一版先用規則抽取，之後可接 AI 做解釋、摘要與測驗。</p>
+              </div>
+              <div class="lesson-list" id="lessonList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="vocabulary">
+          <section class="panel">
+            <div class="panel-heading">
+              <h3>詞彙庫</h3>
+              <p>從你貼上的資料自動累積，點按可以存進錯題本。</p>
+            </div>
+            <div class="vocab-list" id="vocabList"></div>
+          </section>
+        </section>
+
+        <section class="view" id="speaking">
+          <div class="speaking-layout">
+            <section class="panel coach-panel">
+              <div class="panel-heading">
+                <h3>演講跟讀</h3>
+                <p>用你貼上的論文或網頁句子練摘要與報告口說。</p>
+              </div>
+              <div class="sentence-card">
+                <p class="sentence-label">研究句跟讀</p>
+                <h3 id="targetSentence">Could I have a cup of coffee, please?</h3>
+                <p id="sentenceHint">請放慢速度，把每個字尾念清楚。</p>
+              </div>
+              <div class="button-row voice-controls">
+                <button class="primary-action" id="speakSentence">播放</button>
+                <button class="record-action" id="recordSpeech">開始跟讀</button>
+                <button class="ghost-action" id="nextSentence">換一句</button>
+              </div>
+              <div class="transcript-box">
+                <span>你說的是</span>
+                <p id="transcriptText">尚未錄音</p>
+              </div>
+            </section>
+
+            <section class="panel feedback-panel">
+              <div class="panel-heading">
+                <h3>即時回饋</h3>
+                <p>目前是基礎比對，不是假裝音素級評分。</p>
+              </div>
+              <div class="score-ring">
+                <svg viewBox="0 0 120 120" role="img" aria-label="口說分數">
+                  <circle cx="60" cy="60" r="50"></circle>
+                  <circle id="scoreCircle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <strong id="scoreText">--</strong>
+              </div>
+              <div class="feedback-list" id="feedbackList"></div>
+              <button class="ghost-action full" id="saveSpeakingMistake">存入口說錯題</button>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="review">
+          <section class="panel">
+            <div class="panel-heading">
+              <h3>今天該複習</h3>
+              <p>依錯題時間與難度安排，先複習最常錯的。</p>
+            </div>
+            <div class="review-list" id="reviewList"></div>
+          </section>
+        </section>
+
+        <section class="view" id="mistakes">
+          <section class="panel">
+            <div class="panel-heading">
+              <h3>錯題本</h3>
+              <p>不熟的詞彙、口說句、閱讀卡都會集中在這裡。</p>
+            </div>
+            <div class="mistake-tools">
+              <input id="manualMistake" type="text" placeholder="手動新增：例如 empirical 不熟" />
+              <button class="primary-action" id="addManualMistake">新增</button>
+            </div>
+            <div class="mistake-list" id="mistakeList"></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js?v=2"></script>
+    <script src="./app.js?v=6"></script>
+  </body>
+</html>
