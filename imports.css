@@ -6,15 +6,18 @@
 }
 
 .import-card {
+  position: relative;
   min-height: 116px;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
   text-align: left;
+  overflow: hidden;
 }
 
-.import-card:hover {
+.import-card:hover,
+.import-card:focus-within {
   border-color: var(--mint);
   background: #f4fbf8;
 }
@@ -36,6 +39,7 @@
 .import-card strong,
 .import-card small {
   display: block;
+  pointer-events: none;
 }
 
 .import-card strong {
@@ -48,7 +52,23 @@
 }
 
 .file-input {
-  display: none;
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.import-card .file-input {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.001;
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: 120px;
 }
 
 .import-status {
