@@ -2,8 +2,9 @@
   function splitIntoPracticeChunks(text) {
     const clean = text.replace(/\r/g, "").replace(/\s+/g, " ").trim();
     if (!clean) return [];
+
     const sentences = clean
-      .split(/(?<=[.!?。！？])\s+/)
+      .split(/(?<=[.!?\u3002\uff01\uff1f])\s+/)
       .map((item) => item.trim())
       .filter((item) => item.length > 0);
 
@@ -26,9 +27,10 @@
       for (let index = 0; index < words.length; index += 50) {
         fallback.push(words.slice(index, index + 50).join(" "));
       }
-      return fallback.slice(0, 10);
+      return fallback.slice(0, 12);
     }
-    return chunks.slice(0, 10);
+
+    return chunks.slice(0, 12);
   }
 
   function lessonExcerpt(text, limit = 210) {
@@ -37,19 +39,20 @@
 
   function practiceSentenceFromChunk(chunk) {
     const options = chunk
-      .split(/[.!?。！？]/)
+      .split(/[.!?\u3002\uff01\uff1f]/)
       .map((item) => item.trim())
       .filter((item) => item.length > 12);
     return pickBestSentence(options) || options[0] || chunk.slice(0, 140);
   }
 
-  window.createLessonsFromMaterial = function createSegmentedLessons(raw) {
+  function buildSegmentedLessons(raw) {
     const text = raw.trim();
     if (!text) return starterLessons;
 
     const chunks = splitIntoPracticeChunks(text);
-    const chunkSentences = chunks.map(practiceSentenceFromChunk).filter(Boolean);
     const keywords = extractVocabulary(text, state.sourceType);
+    const chunkSentences = chunks.map(practiceSentenceFromChunk).filter(Boolean);
+
     state.sentences = chunkSentences.length ? chunkSentences : defaultSentences;
     selectedSentence = state.sentences[0];
     mergeVocabulary(keywords);
@@ -77,11 +80,14 @@
     }));
 
     return [...overview, ...segmentLessons];
-  };
+  }
+
+  window.createLessonsFromMaterial = buildSegmentedLessons;
 
   window.renderLessons = function renderSegmentLessons() {
     const list = document.querySelector("#lessonList");
     if (!list) return;
+
     list.innerHTML = state.lessons
       .map(
         (lesson) => `
@@ -110,16 +116,26 @@
     });
   };
 
-  const oldBuildButton = document.querySelector("#buildLesson");
-  if (oldBuildButton && !oldBuildButton.dataset.segmentPatch) {
-    oldBuildButton.dataset.segmentPatch = "1";
-    oldBuildButton.addEventListener("click", () => {
-      setTimeout(() => {
-        state.lessons = window.createLessonsFromMaterial(document.querySelector("#materialInput").value);
-        saveState();
-      }, 0);
+  function forceSegmentBuildButton() {
+    const oldButton = document.querySelector("#buildLesson");
+    if (!oldButton || oldButton.dataset.segmentButton === "2") return;
+
+    const newButton = oldButton.cloneNode(true);
+    newButton.dataset.segmentButton = "2";
+    oldButton.replaceWith(newButton);
+
+    newButton.addEventListener("click", () => {
+      const input = document.querySelector("#materialInput");
+      state.lessons = buildSegmentedLessons(input.value);
+      addSession("內容分段分析");
+      saveState();
+      renderDashboard();
+      renderVocabulary();
+      window.renderLessons();
+      showToast("已拆成一小段一小段練習");
     });
   }
 
+  forceSegmentBuildButton();
   window.renderLessons();
 })();
