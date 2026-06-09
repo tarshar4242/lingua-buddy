@@ -11,7 +11,7 @@
     let current = "";
     sentences.forEach((sentence) => {
       const next = current ? `${current} ${sentence}` : sentence;
-      if (next.length > 360 && current) {
+      if (next.length > 320 && current) {
         chunks.push(current);
         current = sentence;
       } else {
@@ -23,15 +23,15 @@
     if (chunks.length <= 1 && clean.length > 420) {
       const words = clean.split(" ");
       const fallback = [];
-      for (let index = 0; index < words.length; index += 55) {
-        fallback.push(words.slice(index, index + 55).join(" "));
+      for (let index = 0; index < words.length; index += 50) {
+        fallback.push(words.slice(index, index + 50).join(" "));
       }
       return fallback.slice(0, 10);
     }
     return chunks.slice(0, 10);
   }
 
-  function lessonExcerpt(text, limit = 220) {
+  function lessonExcerpt(text, limit = 210) {
     return text.length > limit ? `${text.slice(0, limit)}...` : text;
   }
 
@@ -43,7 +43,7 @@
     return pickBestSentence(options) || options[0] || chunk.slice(0, 140);
   }
 
-  function createLessonsFromMaterial(raw) {
+  window.createLessonsFromMaterial = function createSegmentedLessons(raw) {
     const text = raw.trim();
     if (!text) return starterLessons;
 
@@ -58,7 +58,7 @@
       {
         tag: sourceLabel(state.sourceType),
         title: `已切成 ${chunks.length || 1} 小段`,
-        body: "先讀一小段、抓主旨、再挑一句跟讀。不要一次吞整篇。",
+        body: "每次只練一小段：先看懂主旨，再跟讀一句，最後把不熟詞加入複習。",
       },
       {
         tag: "Vocab",
@@ -68,6 +68,7 @@
     ];
 
     const segmentLessons = chunks.map((chunk, index) => ({
+      id: `segment-${Date.now()}-${index}`,
       tag: `段落 ${index + 1}/${chunks.length}`,
       title: `第 ${index + 1} 小段練習`,
       body: lessonExcerpt(chunk),
@@ -76,9 +77,9 @@
     }));
 
     return [...overview, ...segmentLessons];
-  }
+  };
 
-  function renderLessons() {
+  window.renderLessons = function renderSegmentLessons() {
     const list = document.querySelector("#lessonList");
     if (!list) return;
     list.innerHTML = state.lessons
@@ -88,15 +89,15 @@
             <span class="lesson-tag">${lesson.tag}</span>
             <strong>${lesson.title}</strong>
             <p>${lesson.body}</p>
-            ${lesson.practiceText ? `<button class="ghost-action segment-practice" data-segment="${lesson.tag}">練這段</button>` : ""}
+            ${lesson.practiceText ? `<button class="ghost-action segment-practice" data-segment-id="${lesson.id}">練這段</button>` : ""}
           </article>
         `
       )
       .join("");
 
-    list.querySelectorAll("[data-segment]").forEach((button) => {
+    list.querySelectorAll("[data-segment-id]").forEach((button) => {
       button.addEventListener("click", () => {
-        const lesson = state.lessons.find((item) => item.tag === button.dataset.segment);
+        const lesson = state.lessons.find((item) => item.id === button.dataset.segmentId);
         if (!lesson) return;
         document.querySelector("#materialInput").value = lesson.practiceText;
         selectedSentence = lesson.sentence || practiceSentenceFromChunk(lesson.practiceText);
@@ -107,5 +108,18 @@
         showToast("已切到這一小段，開始跟讀");
       });
     });
+  };
+
+  const oldBuildButton = document.querySelector("#buildLesson");
+  if (oldBuildButton && !oldBuildButton.dataset.segmentPatch) {
+    oldBuildButton.dataset.segmentPatch = "1";
+    oldBuildButton.addEventListener("click", () => {
+      setTimeout(() => {
+        state.lessons = window.createLessonsFromMaterial(document.querySelector("#materialInput").value);
+        saveState();
+      }, 0);
+    });
   }
+
+  window.renderLessons();
 })();
