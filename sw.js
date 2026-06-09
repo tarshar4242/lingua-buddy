@@ -1,10 +1,11 @@
-const cacheName = "lingua-buddy-v9";
+const cacheName = "lingua-buddy-v10";
 const assets = [
   "./",
   "./index.html",
   "./styles.css?v=6",
   "./imports.css?v=1",
   "./app.js?v=7",
+  "./segments.js?v=1",
   "./imports.js?v=1",
   "./manifest.webmanifest?v=5",
   "./supabase-config.js?v=2",
