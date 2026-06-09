@@ -1,4 +1,4 @@
-const cacheName = "lingua-buddy-v8";
+const cacheName = "lingua-buddy-v9";
 const assets = [
   "./",
   "./index.html",
